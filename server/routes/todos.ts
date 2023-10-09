@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import IResponse from "../types/IResponse";
-import Todo from "../types/Todo";
+import TodoModel from "../models/Todo";
+import Todo from "../types/ITodo";
 
 type TodoResponse = Todo | Todo[];
 
@@ -10,9 +11,14 @@ interface ITodoParams {
   id: number;
 }
 
-router.get("/", (req: Request, res: Response<IResponse<TodoResponse>>) => {
-  res.send({ success: true, data: [] });
-});
+router.get(
+  "/",
+  async (_req: Request, res: Response<IResponse<TodoResponse>>) => {
+    const todos: Todo[] = await TodoModel.find();
+
+    res.send({ success: true, data: todos });
+  }
+);
 
 router.get("/:id", (req: Request<ITodoParams>, res: Response) => {
   const { id }: ITodoParams = req.params;
